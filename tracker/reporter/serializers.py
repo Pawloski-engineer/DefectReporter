@@ -21,8 +21,8 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ['location_id', 'location_name', 'parent_location_id']
 
 
-class DefectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = ['defect_id', 'defect_name', 'defect_description', 'defect_status', 'defect_location',
-                  'defect_respondent', 'creation_date', 'media_files', 'reporter']
+# class DefectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Location
+#         fields = ['defect_id', 'defect_name', 'defect_description', 'defect_status', 'defect_location',
+#                   'defect_respondent', 'creation_date', 'media_files', 'reporter']
