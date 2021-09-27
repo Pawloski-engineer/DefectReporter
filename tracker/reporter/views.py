@@ -1,5 +1,5 @@
 from django.shortcuts import render
-# from .serializers import DefectSerializer
+from .serializers import DefectSerializer
 from .serializers import LocationSerializer, UserSerializer, GroupSerializer
 from .models import Location, Defect
 from django.contrib.auth.models import User, Group
@@ -7,8 +7,6 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework import filters, status
-from django.http import HttpResponse, JsonResponse
-from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -47,53 +45,51 @@ def location_detail(request, pk):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
         location.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-#
-# @csrf_exempt
-# def defects_list(request):
-#     if request.method == "GET":
-#         defects = Defect.objects.all()
-#         serializer = DefectSerializer(defects, many=True)
-#         return JsonResponse(serializer.data, safe=False)
-#
-#     elif request.method == "POST":
-#         data = JSONParser().parse(request)
-#         serializer = DefectSerializer(data=data)
-#
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
-#
-#
-# @csrf_exempt
-# def defect_detail(request, pk):
-#     try:
-#         defect = Defect.objects.get(pk=pk)
-#
-#     except Defect.DoesNotExist:
-#         return HttpResponse(status=404)
-#
-#     if request.method == "GET":
-#         serializer = DefectSerializer(defect)
-#         return JsonResponse(serializer.data)
-#
-#     elif request.method == "PUT":
-#         data = JSONParser().parse(request)
-#         serializer = DefectSerializer(defect, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data)
-#         return JsonResponse(serializer.errors, status=400)
-#
-#     elif request.method == "DELETE":
-#         defect.delete()
-#         return HttpResponse(status=204)
+
+@api_view(['GET', 'POST'])
+def defects_list(request):
+    if request.method == "GET":
+        defects = Defect.objects.all()
+        serializer = DefectSerializer(defects, many=True)
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = DefectSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def defect_detail(request, pk):
+    try:
+        defect = Defect.objects.get(pk=pk)
+
+    except Defect.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == "GET":
+        serializer = DefectSerializer(defect)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = DefectSerializer(defect, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        defect.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # class DefectViewSet(viewsets.ModelViewSet):

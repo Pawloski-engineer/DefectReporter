@@ -2,7 +2,7 @@ from django.urls import path, include
 # from . import views
 from rest_framework import routers
 from .views import locations_list, location_detail
-# from .views import defects_list, defect_detail
+from .views import defects_list, defect_detail
 
 
 # router = routers.DefaultRouter()
@@ -17,8 +17,8 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('locationslist/', locations_list),
     path('location/<int:pk>/', location_detail),
-    # path('defectslist/', defects_list),
-    # path('defect/<int:pk>/', defect_detail),
+    path('defectslist/', defects_list),
+    path('defect/<int:pk>/', defect_detail),
 
 ]
 
